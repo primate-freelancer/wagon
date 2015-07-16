@@ -13,7 +13,10 @@ gem 'rb-fsevent', '~> 0.9.1'
 
 gem 'therubyracer'
 
-group :test do
+group :test, :development do
   gem 'pry'
+end
+
+group :test do
   gem 'coveralls', require: false
 end

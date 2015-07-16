@@ -34,8 +34,6 @@ module Locomotive
 
       def convert_url(source, convert_string)
 
-        Locomotive::Wagon::Logger.error "IMD OING THIS: #{source.inspect}"
-
         _source = (case source
         when String then source
         when Hash   then source['url'] || source[:url]
@@ -55,8 +53,33 @@ module Locomotive
         else
           file = self.class.app.fetch_file(File.join(self.path, 'public', _source))
         end
-        
+
         file.process(:convert, convert_string).url
+      end
+
+      def resize_and_convert_url(source, resize_string, convert_string)
+
+        _source = (case source
+        when String then source
+        when Hash   then source['url'] || source[:url]
+        else
+          source.try(:url)
+        end)
+
+        if _source.blank?
+          Locomotive::Wagon::Logger.error "Unable to resize and convert on the fly: #{source.inspect}"
+          return
+        end
+
+        return _source unless self.enabled?
+
+        if _source =~ /^http/
+          file = self.class.app.fetch_url(_source)
+        else
+          file = self.class.app.fetch_file(File.join(self.path, 'public', _source))
+        end
+
+        file.process(:thumb, resize_string).process(:convert, convert_string).url
       end
 
       def self.app

@@ -5,7 +5,6 @@ module Locomotive
         module Convert
 
           def convert(input, convert_string)
-            Locomotive::Wagon::Logger.error "IMD OING THIS: #{input.inspect}"
             Locomotive::Wagon::Dragonfly.instance.convert_url(input, convert_string)
           end
 
